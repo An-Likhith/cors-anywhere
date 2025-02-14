@@ -38,7 +38,10 @@ cors_proxy.createServer({
     // Log cookies from incoming request
     if (req.headers.cookie) {
       console.log("[+] Cookies from request:", req.headers.cookie);
-    }
+    } 
+    else {
+            console.log("[-] No cookies received in request.");
+        }
   },
 
   httpProxyOptions: {
